@@ -19,7 +19,7 @@ import jxl.DateCell;
 import jxl.Sheet;
 import jxl.Workbook;
 
-public class Xls2XmlApparel{
+public class Xls2XmlElectronics{
 	public void mainf(String inFileName, String outFolderName) throws Exception{
 		File f=new File(inFileName);//creates file		
 		System.out.println("excel file loaded");
@@ -28,14 +28,13 @@ public class Xls2XmlApparel{
 		 wb=Workbook.getWorkbook(f);
 		System.out.println("workbook loaded");
 		}catch(Exception e){
-			System.out.println("Input file or path is invalid.. please check..");
+			System.out.println("Input file or path is invalid.. please check.." + e);
 			return;
 		}
 		Sheet s=wb.getSheet(0);
 		int rowNum=s.getRows();
 		int colNum=s.getColumns();
-//		int k=0,z=1;
-//		System.out.println(rowNum+"  "+colNum);
+
 		int i;
 		for(i=6;i<rowNum;i++){
 			String xmlOutput=outFolderName+"/"+(s.getCell(2, i).getContents()+"_"+s.getCell(3, i).getContents()+"_"+s.getCell(4, i).getContents())+".xml";
@@ -55,33 +54,21 @@ public class Xls2XmlApparel{
 			Element produc=document.createElement("product");
 			root.appendChild(produc);
 			
-//			Attr attr=document.createAttribute("id");
-//			attr.setValue(""+(i));
-//			product.setAttributeNode(attr);
-			for(int j=4;j<=11;j++){
-				//System.out.println(j+" "+colNum);
-//				System.out.println(s.getCell(134,i).getContents());
-//				System.out.println(wb.getSheet(0).getCell(j+2,8).getContents());//getCell(col,row)
 
-			//	Element member=document.createElement(s.getCell (l,0).getContents());
-//				Element member=document.createElement(s.getCell(j,k).getContents());
-				//System.out.println(s.getCell(j,i).getContents());
-//				member.appendChild(document.createTextNode(s.getCell(j, i).getContents()));
-				//System.out.println(s.getCell(j, i).getContents());
-//				produc.appendChild(member);
-	//			System.out.println(s.getCell(178,4).getContents());
+			for(int j=4;j<=11;j++){
+				
 				Element member1=document.createElement((""+s.getCell(j,3).getContents()).trim());
 				member1.appendChild(document.createTextNode((""+s.getCell(j, i).getContents()).trim()));
 				produc.appendChild(member1);
 		
 				
-				//System.out.println(s.getCell(j,i).getContents());
+			
 			}
 			//----------------product features-----------------------
 			
 			Element productFeatures=document.createElement("productFeatures");
 			produc.appendChild(productFeatures);
-			for(int j=12;j<=126;j++){
+			for(int j=12;j<=255;j++){
 				
 				if(s.getCell(j,i).getContents()!=""){
 				
@@ -96,24 +83,34 @@ public class Xls2XmlApparel{
 				value.appendChild(document.createTextNode((""+s.getCell(j, i).getContents()).trim()));
 				productFeature.appendChild(value);
 				}
-				
-				//System.out.println(j+" "+colNum);
-//				System.out.println(wb.getSheet(0).getCell(j+2,8).getContents());//getCell(col,row)
-
-			//	Element member=document.createElement(s.getCell (l,0).getContents());
-//				Element member=document.createElement(s.getCell(j,k).getContents());
-				//System.out.println(s.getCell(j,i).getContents());
-//				member.appendChild(document.createTextNode(s.getCell(j, i).getContents()));
-				//System.out.println(s.getCell(j, i).getContents());
-//				produc.appendChild(member);
-//				System.out.println(s.getCell(178,4).getContents());
-//				Element member1=document.createElement(s.getCell(j,3).getContents());
-//				member1.appendChild(document.createTextNode(s.getCell(j, i).getContents()));
-//				produc.appendChild(member1);
-		
-				
-				//System.out.println(s.getCell(j,i).getContents());
 			}
+//				====================================================================================
+//				========================================Sheet2 starts===============================
+//				====================================================================================
+				
+				s=wb.getSheet(1);
+				for(int j=0;j<=35;j++){
+					if(s.getCell(j,i).getContents()!=""){
+						
+						Element productFeature=document.createElement("productFeature");
+						productFeatures.appendChild(productFeature);
+						
+						Element qualifier=document.createElement("qualifier");
+						qualifier.appendChild(document.createTextNode((""+s.getCell(j,3).getContents()).trim()));
+						productFeature.appendChild(qualifier);
+						
+						Element value=document.createElement("value");
+						value.appendChild(document.createTextNode((""+s.getCell(j, i).getContents()).trim()));
+						productFeature.appendChild(value);
+				}
+				
+				
+				}
+				
+				
+				
+
+			
 			//----------------Global Identifier-----------------------
 			Element global=document.createElement("globalIdentifier");
 			produc.appendChild(global);
@@ -122,37 +119,25 @@ public class Xls2XmlApparel{
 				
 				
 				Element qualifier=document.createElement("qualifier");
-				qualifier.appendChild(document.createTextNode((""+s.getCell(127, i).getContents()).trim()));
+				qualifier.appendChild(document.createTextNode((""+s.getCell(36, i).getContents()).trim()));
 				global.appendChild(qualifier);
 				
 				Element value=document.createElement("value");
-				value.appendChild(document.createTextNode((""+s.getCell(128, i).getContents()).trim()));
+				value.appendChild(document.createTextNode((""+s.getCell(37, i).getContents()).trim()));
 				global.appendChild(value);
 				
 				//----------------Seller Info-----------------------
-				int j=129;
+				int j=38;
 				Element sellerInfo=document.createElement("sellerInfo");
 				produc.appendChild(sellerInfo);
-				for(;j<136;j++){//j=128
-					if(j==133 || j==134 || j== 135){
+				for(;j<=44;j++){//j=128
+					if(j==42 || j==43 || j==44){
 					DateCell dCell=null;
 					String dateStr="",prefixD="",prefixM="";
 					if(s.getCell(j, i).getType() == CellType.DATE && s.getCell(j,i).getContents()!=null){
 						dCell = (DateCell)s.getCell(j, i);
 						String dateS = ""+dCell.getDate();
-						//String[] dstr={"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-						//System.out.println("Value of Date Cell is:" +dateS.substring(dateS.length()-4, dateS.length())+"-"+ dCell.getDate().getMonth()+"-"+dCell.getDate().getDay());
-//						System.out.println("Value of Date Cell is:" +dateS.substring(4, 7));
-//						String tmp=dateS.substring(4, 7);
-//						int temp=1;
-//						for(String search:dstr)
-//						{
-//							if(tmp.equals(search)){
-//								break;
-//							}
-//							else
-//								temp++;
-//						}
+					
 						prefixD=(dCell.getDate().getDate()<10)?"0"+dCell.getDate().getDate():""+dCell.getDate().getDate();
 						prefixM= ((dCell.getDate().getMonth()+1)<10)?"0"+(dCell.getDate().getMonth()+1):""+(dCell.getDate().getMonth()+1);
 					dateStr = dateS.substring(dateS.length()-4, dateS.length())+"-"+prefixM+"-"+prefixD;
@@ -161,6 +146,7 @@ public class Xls2XmlApparel{
 					member2.appendChild(document.createTextNode(dateStr));
 					sellerInfo.appendChild(member2);
 					}else{
+						//System.out.println("I a here with j="+j+" and i="+i);
 					Element member2=document.createElement((""+s.getCell(j,3).getContents()).trim());
 					member2.appendChild(document.createTextNode((""+s.getCell(j, i).getContents()).trim()));
 					sellerInfo.appendChild(member2);
@@ -171,19 +157,19 @@ public class Xls2XmlApparel{
 				}
 				
 				//----------------variant-----------------------
-				Element variant=document.createElement("variant");
+				/*Element variant=document.createElement("variant");
 				produc.appendChild(variant);
 				for(;j<139;j++){//j=136
-					if(s.getCell(j,i).getContents()!=""){
+					
 					Element member3=document.createElement((""+s.getCell(j,3).getContents()).trim());
 					member3.appendChild(document.createTextNode((""+s.getCell(j, i).getContents()).trim()));
 					variant.appendChild(member3);
-					}
+					
 				
 				
-				}
+				}*/
 				//---------------- article mini description and review added to product-----------------------
-			for (; j < 141; j++) {// j=139
+			for (; j <= 46; j++) {// j=139
 				if(s.getCell(j,i).getContents()!=""){
 				Element member4 = document.createElement((""+s.getCell(j,3).getContents()).trim());
 				member4.appendChild(document.createTextNode((""+s.getCell(j, i).getContents()).trim()));
@@ -196,11 +182,11 @@ public class Xls2XmlApparel{
 			
 			Element medias=document.createElement("medias");
 			produc.appendChild(medias);
-			for(;j<145;j++){//j=141
+			for(;j<=50;j++){//j=141
 				
 				Element media=document.createElement("media");
 				medias.appendChild(media);
-				
+
 				Element type=document.createElement("type");
 				type.appendChild(document.createTextNode("Image"));
 				media.appendChild(type);
@@ -216,7 +202,7 @@ public class Xls2XmlApparel{
 			Element brand=document.createElement("brand");
 			produc.appendChild(brand);
 			
-			for(j=149;j<152;j++){//j=149
+			for(j=55;j<=57;j++){//j=149
 				
 				Element member5=document.createElement((""+s.getCell(j,3).getContents()).trim());
 				member5.appendChild(document.createTextNode((""+s.getCell(j, i).getContents()).trim()));
@@ -229,7 +215,7 @@ public class Xls2XmlApparel{
 			Element richattr=document.createElement("richAttribute");
 			produc.appendChild(richattr);
 			
-			for(;j<169;j++){//j=151
+			for(;j<=74;j++){//j=151
 				
 				Element member6=document.createElement((""+s.getCell(j,3).getContents()).trim());
 				member6.appendChild(document.createTextNode((""+s.getCell(j, i).getContents()).trim()));
@@ -240,7 +226,7 @@ public class Xls2XmlApparel{
 			}
 			//----------------cross sell info up sell info-----------------------	
 						
-			for(;j<173;j++){//j=168
+			for(;j<=78;j++){//j=168
 				if(s.getCell(j,i).getContents()!=""){
 				Element member7=document.createElement((""+s.getCell(j,3).getContents()).trim());
 				
@@ -257,7 +243,7 @@ public class Xls2XmlApparel{
 			Element seoContent=document.createElement("seoContent");
 			produc.appendChild(seoContent);
 			
-			for(;j<177;j++){//j=172
+			for(;j<=82;j++){//j=172
 				if(s.getCell(j,i).getContents()!=""){
 				Element member8=document.createElement((""+s.getCell(j,3).getContents()).trim());
 				member8.appendChild(document.createTextNode((""+s.getCell(j, i).getContents()).trim()));
@@ -271,7 +257,7 @@ public class Xls2XmlApparel{
 			Element messages=document.createElement("messages");
 			produc.appendChild(messages);
 			
-			for(;j<179;j++){//j=176
+			for(;j<=84;j++){//j=176
 				if(s.getCell(j,i).getContents()!=""){
 				Element member9=document.createElement((""+s.getCell(j,3).getContents()).trim());
 				member9.appendChild(document.createTextNode((""+s.getCell(j, i).getContents()).trim()));
@@ -295,16 +281,12 @@ public class Xls2XmlApparel{
 				System.out.println("Output path is incorrect.. please check");
 				return;
 			}
-		
 			
-			// Info
-			
-		//	System.out.println((i-5) + " files created..");
-		}
+			s=wb.getSheet(0);
+	}
 		
 		System.out.println((i-6) + " files created successfully.");
-//		System.out.println(wb.getSheet(0).getCell(0,0).getContents());//getCell(col,row)
-//		System.out.println(wb.getSheet(0).getCell(0,1).getContents());
+
 
 	}
 

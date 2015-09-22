@@ -7,14 +7,17 @@ public class Calling {
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		Xls2XmlApparel obj=new Xls2XmlApparel();
+		//Xls2XmlElectronics eobj = new Xls2XmlElectronics();
 //		System.out.println(args[0]+" "+args[1]);
 		Scanner in = new Scanner(System.in);
 //		in.next();
 		while(true){
+			
 		System.out.println("Enter the input file path with name ex: C:\\excel2xmldata\\input\\excel2xml.xls");
 		String input=in.nextLine().trim();
 		System.out.println("Enter the output folder path ex: C:\\excel2xmldata\\output");
 		String output=in.nextLine().trim();		
+		//eobj.mainf(input,output);
 		obj.mainf(input,output);
 		
 		System.out.println("Do you want to process a new file? press (Y/N)");
@@ -24,6 +27,7 @@ public class Calling {
 		}else{
 			break;
 		}
+		in.nextLine();
 		}
 	}
 
